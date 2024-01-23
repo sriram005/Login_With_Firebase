@@ -42,10 +42,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.mofosoft.myloginapp.R
+import com.mofosoft.myloginapp.Screen
 
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController : NavController) {
     var email by remember { mutableStateOf("") }
     var new_password by remember { mutableStateOf("") }
     var new_password_visible by remember { mutableStateOf(false) }
@@ -148,7 +150,7 @@ fun RegisterScreen() {
                         placeholder = { Text(text = "Confirm Password") },
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Done,
                             keyboardType = KeyboardType.Password
                         ),
                         shape = RoundedCornerShape(8.dp),
@@ -168,7 +170,9 @@ fun RegisterScreen() {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                                  navController.navigate(Screen.login.route)
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -189,7 +193,9 @@ fun RegisterScreen() {
                     ){
                         Text(text = "Already have an Account?")
                         TextButton(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                      navController.navigate(Screen.login.route)
+                            },
                             modifier = Modifier.padding(0.dp)
                         ) {
                             Text(text = "Login")
@@ -201,8 +207,8 @@ fun RegisterScreen() {
     }
 }
 
-@Preview
-@Composable
-fun RegisterPreview() {
-    RegisterScreen()
-}
+//@Preview
+//@Composable
+//fun RegisterPreview() {
+//    RegisterScreen()
+//}

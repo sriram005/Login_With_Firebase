@@ -47,10 +47,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.mofosoft.myloginapp.R
+import com.mofosoft.myloginapp.Screen
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController : NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var password_visible by remember { mutableStateOf(false) }
@@ -122,7 +124,7 @@ fun LoginScreen() {
                         placeholder = { Text(text = "Password")},
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Done,
                             keyboardType = KeyboardType.Password
                         ),
                         shape = RoundedCornerShape(8.dp),
@@ -142,7 +144,9 @@ fun LoginScreen() {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                                  navController.navigate(Screen.home.route)
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -163,7 +167,9 @@ fun LoginScreen() {
                     ){
                         Text(text = "Don't have an account?")
                         TextButton(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                      navController.navigate(Screen.register.route)
+                            },
                             modifier = Modifier.padding(0.dp)
                         ) {
                             Text(text = "Register here")
@@ -175,8 +181,8 @@ fun LoginScreen() {
     }
 }
 
-@Preview
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen()
-}
+//@Preview
+//@Composable
+//fun LoginScreenPreview() {
+//    LoginScreen()
+//}
