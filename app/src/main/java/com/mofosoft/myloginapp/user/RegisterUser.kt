@@ -43,12 +43,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mofosoft.myloginapp.R
 import com.mofosoft.myloginapp.Screen
+import com.mofosoft.myloginapp.data.LoginViewModel
+import com.mofosoft.myloginapp.data.UIEvent
 
 @Composable
-fun RegisterScreen(navController : NavController) {
+fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel = viewModel()) {
     var email by remember { mutableStateOf("") }
     var new_password by remember { mutableStateOf("") }
     var new_password_visible by remember { mutableStateOf(false) }
@@ -97,7 +100,10 @@ fun RegisterScreen(navController : NavController) {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(.72f),
                         value = email,
-                        onValueChange = { email = it },
+                        onValueChange = {
+                            email = it
+                            loginViewModel.onEvent(UIEvent.EmailChanged(it))
+                        },
                         placeholder = { Text(text = "Email") },
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(
@@ -120,7 +126,10 @@ fun RegisterScreen(navController : NavController) {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(.72f),
                         value = new_password,
-                        onValueChange = { new_password = it },
+                        onValueChange = {
+                            new_password = it
+                            loginViewModel.onEvent(UIEvent.PasswordChanged(it))
+                        },
                         placeholder = { Text(text = "Password") },
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(
@@ -130,7 +139,7 @@ fun RegisterScreen(navController : NavController) {
                         shape = RoundedCornerShape(8.dp),
                         visualTransformation = if(new_password_visible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
-                            val image = if(!new_password_visible) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24
+                            val image = if(new_password_visible) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24
                             Icon(
                                 imageVector = ImageVector.vectorResource(image),
                                 contentDescription = "Password-Icon",
@@ -147,7 +156,10 @@ fun RegisterScreen(navController : NavController) {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(.72f),
                         value = confirm_password,
-                        onValueChange = { confirm_password = it },
+                        onValueChange = {
+                            confirm_password = it
+                            loginViewModel.onEvent(UIEvent.ConfirmPasswordChanged(it))
+                        },
                         placeholder = { Text(text = "Confirm Password") },
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(
@@ -157,7 +169,7 @@ fun RegisterScreen(navController : NavController) {
                         shape = RoundedCornerShape(8.dp),
                         visualTransformation = if(confirm_password_visible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
-                            val image = if(!confirm_password_visible) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24
+                            val image = if(confirm_password_visible) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24
                             Icon(
                                 imageVector = ImageVector.vectorResource(image),
                                 contentDescription = "Password-Icon",
@@ -172,7 +184,8 @@ fun RegisterScreen(navController : NavController) {
 
                     Button(
                         onClick = {
-                                  navController.navigate(Screen.login.route)
+                                  //navController.navigate(Screen.login.route)
+                                  loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,

@@ -130,7 +130,7 @@ fun LoginScreen(navController : NavController) {
                         shape = RoundedCornerShape(8.dp),
                         visualTransformation = if(password_visible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
-                            val image = if(!password_visible) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24
+                            val image = if(password_visible) R.drawable.baseline_visibility_24 else R.drawable.baseline_visibility_off_24
                             Icon(
                                 imageVector = ImageVector.vectorResource(image),
                                 contentDescription = "Password-Icon",

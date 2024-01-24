@@ -74,4 +74,7 @@ dependencies {
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-auth")
+
+    //viewmodel
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 }
