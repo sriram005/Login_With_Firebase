@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -77,8 +78,8 @@ fun RegisterScreen(navController : NavController) {
                 ) {
 
                     Text(
-                        text = "Create \nAccount",
-                        fontSize = 32.sp,
+                        text = "Create \n\nAccount",
+                        fontSize = 36.sp,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(12.dp)

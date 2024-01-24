@@ -78,8 +78,8 @@ fun LoginScreen(navController : NavController) {
                 ) {
 
                     Text(
-                        text = "Welcome \nBack",
-                        fontSize = 32.sp,
+                        text = "Welcome \n\nBack",
+                        fontSize = 36.sp,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(12.dp)
