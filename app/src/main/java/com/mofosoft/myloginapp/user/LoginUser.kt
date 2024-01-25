@@ -1,5 +1,6 @@
 package com.mofosoft.myloginapp.user
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,25 +38,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mofosoft.myloginapp.R
 import com.mofosoft.myloginapp.Screen
+import com.mofosoft.myloginapp.data.loginData.LoginUIEvent
+import com.mofosoft.myloginapp.data.loginData.LoginViewModel
+import kotlin.math.log
 
 @Composable
-fun LoginScreen(navController : NavController) {
+fun LoginScreen(
+    navController : NavController,
+    loginViewModel: LoginViewModel = viewModel()
+    ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var password_visible by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -97,7 +107,10 @@ fun LoginScreen(navController : NavController) {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(.72f),
                         value = email,
-                        onValueChange = { email = it },
+                        onValueChange = {
+                            email = it
+                            loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
+                        },
                         placeholder = { Text(text = "Email")},
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(
@@ -111,7 +124,8 @@ fun LoginScreen(navController : NavController) {
                                 imageVector = Icons.Filled.Email,
                                 contentDescription = "Email-icon"
                             )
-                        }
+                        },
+                        isError = !(loginViewModel.loginUiState.value.emailError)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -120,7 +134,10 @@ fun LoginScreen(navController : NavController) {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(.72f),
                         value = password,
-                        onValueChange = { password = it },
+                        onValueChange = {
+                            password = it
+                            loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
+                            },
                         placeholder = { Text(text = "Password")},
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(
@@ -138,19 +155,36 @@ fun LoginScreen(navController : NavController) {
                                     password_visible = !password_visible
                                 }
                             )
-                        }
+                        },
+                        isError = !(loginViewModel.loginUiState.value.passwordError)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Button(
                         onClick = {
-                                  navController.navigate(Screen.home.route)
+                            loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                            if(loginViewModel.loginUiState.value.isLoginSuccessful){
+                                Toast.makeText(
+                                    context,
+                                    "Login Successful",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                navController.navigate(Screen.home.route)
+                            }
+                            else{
+                                Toast.makeText(
+                                    context,
+                                    loginViewModel.loginUiState.value.errorMessage,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
+                        ),
+                        enabled = loginViewModel.allValidationsPassed.value
                     ) {
                         Text(
                             text = "Login",
