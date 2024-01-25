@@ -1,4 +1,4 @@
-package com.mofosoft.myloginapp.data
+package com.mofosoft.myloginapp.data.registerData
 
 data class RegisterUiState(
     var email : String = "",
@@ -7,5 +7,8 @@ data class RegisterUiState(
 
     var emailError : Boolean = false,
     var newPasswordError : Boolean = false,
-    var confirmPasswordError : Boolean = false
+    var confirmPasswordError : Boolean = false,
+
+    var isRegistrationSuccessful :Boolean = false,
+    var errorMessage : String = ""
 )

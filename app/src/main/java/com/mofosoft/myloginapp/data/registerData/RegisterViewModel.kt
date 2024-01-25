@@ -1,37 +1,41 @@
-package com.mofosoft.myloginapp.data
+package com.mofosoft.myloginapp.data.registerData
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.mofosoft.myloginapp.data.registerData.RegisterUIEvent
 import com.mofosoft.myloginapp.data.rules.Validator
 
-class LoginViewModel: ViewModel() {
+class RegisterViewModel: ViewModel() {
 
     var registerUiState = mutableStateOf(RegisterUiState())
 
-    fun onEvent(event : UIEvent){
+    var allValidationsPassed = mutableStateOf(false)
+
+    fun onEvent(event : RegisterUIEvent){
         when(event){
-            is UIEvent.EmailChanged -> {
+            is RegisterUIEvent.EmailChanged -> {
                 registerUiState.value = registerUiState.value.copy(
                     email = event.email
                 )
                 validateData()
             }
 
-            is UIEvent.PasswordChanged -> {
+            is RegisterUIEvent.PasswordChanged -> {
                 registerUiState.value = registerUiState.value.copy(
                     new_password = event.new_password
                 )
                 validateData()
             }
 
-            is UIEvent.ConfirmPasswordChanged -> {
+            is RegisterUIEvent.ConfirmPasswordChanged -> {
                 registerUiState.value = registerUiState.value.copy(
                     confirm_password = event.confirm_password
                 )
                 validateData()
             }
 
-            is UIEvent.RegisterButtonClicked -> {
+            is RegisterUIEvent.RegisterButtonClicked -> {
                 //login to Register a new user after validation
                 RegisterUser()
             }
@@ -39,7 +43,10 @@ class LoginViewModel: ViewModel() {
     }
 
     private fun RegisterUser() {
-        validateData()
+        createUserInFirebase(
+            email = registerUiState.value.email,
+            password = registerUiState.value.new_password
+        )
     }
 
     private fun validateData() {
@@ -61,5 +68,23 @@ class LoginViewModel: ViewModel() {
             newPasswordError = passwordResult.status,
             confirmPasswordError = ConfirmPasswordResult.status
         )
+
+        allValidationsPassed.value = emailResult.status && passwordResult.status && ConfirmPasswordResult.status
+    }
+
+
+    private fun createUserInFirebase(email : String, password : String){
+        FirebaseAuth.getInstance()
+            .createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener {
+                registerUiState.value = registerUiState.value.copy(
+                    isRegistrationSuccessful = true
+                )
+            }
+            .addOnFailureListener{
+                registerUiState.value = registerUiState.value.copy(
+                    errorMessage = it.message.toString()
+                )
+            }
     }
 }

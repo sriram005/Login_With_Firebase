@@ -1,5 +1,6 @@
 package com.mofosoft.myloginapp.user
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -34,30 +34,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mofosoft.myloginapp.R
 import com.mofosoft.myloginapp.Screen
-import com.mofosoft.myloginapp.data.LoginViewModel
-import com.mofosoft.myloginapp.data.UIEvent
+import com.mofosoft.myloginapp.data.registerData.RegisterViewModel
+import com.mofosoft.myloginapp.data.registerData.RegisterUIEvent
 
 @Composable
-fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel = viewModel()) {
+fun RegisterScreen(navController : NavController, registerViewModel: RegisterViewModel = viewModel()) {
     var email by remember { mutableStateOf("") }
     var new_password by remember { mutableStateOf("") }
     var new_password_visible by remember { mutableStateOf(false) }
 
     var confirm_password by remember { mutableStateOf("") }
     var confirm_password_visible by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -102,7 +104,7 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                         value = email,
                         onValueChange = {
                             email = it
-                            loginViewModel.onEvent(UIEvent.EmailChanged(it))
+                            registerViewModel.onEvent(RegisterUIEvent.EmailChanged(it))
                         },
                         placeholder = { Text(text = "Email") },
                         maxLines = 1,
@@ -118,7 +120,7 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                                 contentDescription = "Email-icon"
                             )
                         },
-                        isError = !(loginViewModel.registerUiState.value.emailError)
+                        isError = !(registerViewModel.registerUiState.value.emailError)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -129,7 +131,7 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                         value = new_password,
                         onValueChange = {
                             new_password = it
-                            loginViewModel.onEvent(UIEvent.PasswordChanged(it))
+                            registerViewModel.onEvent(RegisterUIEvent.PasswordChanged(it))
                         },
                         placeholder = { Text(text = "Password") },
                         maxLines = 1,
@@ -149,7 +151,7 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                                 }
                             )
                         },
-                        isError = !(loginViewModel.registerUiState.value.newPasswordError)
+                        isError = !(registerViewModel.registerUiState.value.newPasswordError)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -160,7 +162,7 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                         value = confirm_password,
                         onValueChange = {
                             confirm_password = it
-                            loginViewModel.onEvent(UIEvent.ConfirmPasswordChanged(it))
+                            registerViewModel.onEvent(RegisterUIEvent.ConfirmPasswordChanged(it))
                         },
                         placeholder = { Text(text = "Confirm Password") },
                         maxLines = 1,
@@ -180,20 +182,28 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                                 }
                             )
                         },
-                        isError = !(loginViewModel.registerUiState.value.confirmPasswordError)
+                        isError = !(registerViewModel.registerUiState.value.confirmPasswordError)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Button(
                         onClick = {
-                                  //navController.navigate(Screen.login.route)
-                                  loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+                            //navController.navigate(Screen.login.route)
+                            registerViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
+                            if(registerViewModel.registerUiState.value.isRegistrationSuccessful){
+                                navController.navigate(Screen.login.route)
+                                Toast.makeText(context,"Login to continue",Toast.LENGTH_SHORT).show()
+                            }
+                            else{
+                                Toast.makeText(context,registerViewModel.registerUiState.value.errorMessage,Toast.LENGTH_SHORT).show()
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
+                        ),
+                        enabled = registerViewModel.allValidationsPassed.value
                     ) {
                         Text(
                             text = "Register",
