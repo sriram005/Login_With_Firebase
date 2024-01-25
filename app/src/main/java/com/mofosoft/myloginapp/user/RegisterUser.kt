@@ -117,7 +117,8 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                                 imageVector = Icons.Filled.Email,
                                 contentDescription = "Email-icon"
                             )
-                        }
+                        },
+                        isError = !(loginViewModel.registerUiState.value.emailError)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -147,7 +148,8 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                                     new_password_visible = !new_password_visible
                                 }
                             )
-                        }
+                        },
+                        isError = !(loginViewModel.registerUiState.value.newPasswordError)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -177,7 +179,8 @@ fun RegisterScreen(navController : NavController,loginViewModel: LoginViewModel 
                                     confirm_password_visible = !confirm_password_visible
                                 }
                             )
-                        }
+                        },
+                        isError = !(loginViewModel.registerUiState.value.confirmPasswordError)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
