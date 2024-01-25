@@ -51,7 +51,10 @@ import com.mofosoft.myloginapp.data.registerData.RegisterViewModel
 import com.mofosoft.myloginapp.data.registerData.RegisterUIEvent
 
 @Composable
-fun RegisterScreen(navController : NavController, registerViewModel: RegisterViewModel = viewModel()) {
+fun RegisterScreen(
+    navController : NavController,
+    registerViewModel: RegisterViewModel = viewModel()
+) {
     var email by remember { mutableStateOf("") }
     var new_password by remember { mutableStateOf("") }
     var new_password_visible by remember { mutableStateOf(false) }

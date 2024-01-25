@@ -8,7 +8,7 @@ object Validator {
             (email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches())
         )
     }
-    fun validateNewPassword(password : String) : ValidationResult{
+    fun validatePassword(password : String) : ValidationResult{
         return ValidationResult(
             (password.isNotEmpty() && password.length>=8)
         )

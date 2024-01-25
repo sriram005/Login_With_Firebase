@@ -1,12 +1,14 @@
 package com.mofosoft.myloginapp.data.registerData
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.mofosoft.myloginapp.data.registerData.RegisterUIEvent
 import com.mofosoft.myloginapp.data.rules.Validator
 
-class RegisterViewModel: ViewModel() {
+class RegisterViewModel : ViewModel() {
 
     var registerUiState = mutableStateOf(RegisterUiState())
 
@@ -54,7 +56,7 @@ class RegisterViewModel: ViewModel() {
             email = registerUiState.value.email
         )
 
-        val passwordResult = Validator.validateNewPassword(
+        val passwordResult = Validator.validatePassword(
             password = registerUiState.value.new_password
         )
 
@@ -71,8 +73,6 @@ class RegisterViewModel: ViewModel() {
 
         allValidationsPassed.value = emailResult.status && passwordResult.status && ConfirmPasswordResult.status
     }
-
-
     private fun createUserInFirebase(email : String, password : String){
         FirebaseAuth.getInstance()
             .createUserWithEmailAndPassword(email, password)
