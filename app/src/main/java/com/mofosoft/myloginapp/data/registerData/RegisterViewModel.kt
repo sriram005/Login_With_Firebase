@@ -1,19 +1,22 @@
 package com.mofosoft.myloginapp.data.registerData
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
-import com.mofosoft.myloginapp.data.registerData.RegisterUIEvent
+import com.mofosoft.myloginapp.Screen
 import com.mofosoft.myloginapp.data.rules.Validator
 
 class RegisterViewModel : ViewModel() {
 
+    var navController : NavController? = null
+    var context : Context? = null
+
     var registerUiState = mutableStateOf(RegisterUiState())
 
     var allValidationsPassed = mutableStateOf(false)
-
     fun onEvent(event : RegisterUIEvent){
         when(event){
             is RegisterUIEvent.EmailChanged -> {
@@ -22,7 +25,6 @@ class RegisterViewModel : ViewModel() {
                 )
                 validateData()
             }
-
             is RegisterUIEvent.PasswordChanged -> {
                 registerUiState.value = registerUiState.value.copy(
                     new_password = event.new_password
@@ -38,7 +40,6 @@ class RegisterViewModel : ViewModel() {
             }
 
             is RegisterUIEvent.RegisterButtonClicked -> {
-                //login to Register a new user after validation
                 RegisterUser()
             }
         }
@@ -77,14 +78,19 @@ class RegisterViewModel : ViewModel() {
         FirebaseAuth.getInstance()
             .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                registerUiState.value = registerUiState.value.copy(
-                    isRegistrationSuccessful = true
-                )
+                navController?.navigate(Screen.login.route)
+                Toast.makeText(
+                    context,
+                    "Login to continue",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             .addOnFailureListener{
-                registerUiState.value = registerUiState.value.copy(
-                    errorMessage = it.message.toString()
-                )
+                Toast.makeText(
+                    context,
+                    it.message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 }

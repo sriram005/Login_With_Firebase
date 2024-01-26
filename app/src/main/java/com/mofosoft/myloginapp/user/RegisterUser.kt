@@ -49,12 +49,17 @@ import com.mofosoft.myloginapp.R
 import com.mofosoft.myloginapp.Screen
 import com.mofosoft.myloginapp.data.registerData.RegisterViewModel
 import com.mofosoft.myloginapp.data.registerData.RegisterUIEvent
+import kotlinx.coroutines.delay
 
 @Composable
 fun RegisterScreen(
     navController : NavController,
     registerViewModel: RegisterViewModel = viewModel()
 ) {
+
+    registerViewModel.navController = navController
+    registerViewModel.context = LocalContext.current
+
     var email by remember { mutableStateOf("") }
     var new_password by remember { mutableStateOf("") }
     var new_password_visible by remember { mutableStateOf(false) }
@@ -194,13 +199,6 @@ fun RegisterScreen(
                         onClick = {
                             //navController.navigate(Screen.login.route)
                             registerViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
-                            if(registerViewModel.registerUiState.value.isRegistrationSuccessful){
-                                navController.navigate(Screen.login.route)
-                                Toast.makeText(context,"Login to continue",Toast.LENGTH_SHORT).show()
-                            }
-                            else{
-                                Toast.makeText(context,registerViewModel.registerUiState.value.errorMessage,Toast.LENGTH_SHORT).show()
-                            }
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,

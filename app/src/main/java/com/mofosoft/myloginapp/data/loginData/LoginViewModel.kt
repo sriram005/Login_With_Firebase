@@ -1,14 +1,20 @@
 package com.mofosoft.myloginapp.data.loginData
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
+import com.mofosoft.myloginapp.Screen
 import com.mofosoft.myloginapp.data.rules.Validator
 
 class LoginViewModel : ViewModel() {
 
     var loginUiState = mutableStateOf(LoginUiState())
     var allValidationsPassed = mutableStateOf(false)
+    var navController : NavController? = null
+    var context : Context? = null
 
     fun onEvent(event : LoginUIEvent){
         when(event){
@@ -59,14 +65,19 @@ class LoginViewModel : ViewModel() {
         FirebaseAuth.getInstance()
             .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                loginUiState.value = loginUiState.value.copy(
-                    isLoginSuccessful = true
-                )
+                Toast.makeText(
+                    context,
+                    "Login Successful",
+                    Toast.LENGTH_SHORT
+                ).show()
+                navController?.navigate(Screen.home.route)
             }
             .addOnFailureListener {
-                loginUiState.value = loginUiState.value.copy(
-                    errorMessage = it.message.toString()
-                )
+                Toast.makeText(
+                    context,
+                    it.message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 }

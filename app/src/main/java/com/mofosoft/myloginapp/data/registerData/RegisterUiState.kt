@@ -8,7 +8,4 @@ data class RegisterUiState(
     var emailError : Boolean = false,
     var newPasswordError : Boolean = false,
     var confirmPasswordError : Boolean = false,
-
-    var isRegistrationSuccessful :Boolean = false,
-    var errorMessage : String = ""
 )

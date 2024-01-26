@@ -6,7 +6,4 @@ data class LoginUiState(
 
     var emailError : Boolean = false,
     var passwordError : Boolean = false,
-
-    var isLoginSuccessful :Boolean = false,
-    var errorMessage : String = ""
 )

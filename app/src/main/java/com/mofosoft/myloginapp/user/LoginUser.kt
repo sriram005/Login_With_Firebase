@@ -1,6 +1,5 @@
 package com.mofosoft.myloginapp.user
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,16 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActionScope
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -53,18 +48,18 @@ import com.mofosoft.myloginapp.R
 import com.mofosoft.myloginapp.Screen
 import com.mofosoft.myloginapp.data.loginData.LoginUIEvent
 import com.mofosoft.myloginapp.data.loginData.LoginViewModel
-import kotlin.math.log
 
 @Composable
 fun LoginScreen(
     navController : NavController,
     loginViewModel: LoginViewModel = viewModel()
-    ) {
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var password_visible by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
+    loginViewModel.navController = navController
+    loginViewModel.context = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -164,21 +159,6 @@ fun LoginScreen(
                     Button(
                         onClick = {
                             loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
-                            if(loginViewModel.loginUiState.value.isLoginSuccessful){
-                                Toast.makeText(
-                                    context,
-                                    "Login Successful",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                navController.navigate(Screen.home.route)
-                            }
-                            else{
-                                Toast.makeText(
-                                    context,
-                                    loginViewModel.loginUiState.value.errorMessage,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
