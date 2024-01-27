@@ -5,9 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.mofosoft.myloginapp.data.homeData.HomeViewModel
 import com.mofosoft.myloginapp.ui.theme.MyLoginAppTheme
 import com.mofosoft.myloginapp.user.HomeScreen
 import com.mofosoft.myloginapp.user.LoginScreen
@@ -20,10 +22,19 @@ class MainActivity : ComponentActivity() {
             MyLoginAppTheme(
                 darkTheme = false
             ) {
+                val homeViewModel : HomeViewModel = viewModel()
+                homeViewModel.checkForActiveSession()
+
+                var startDestination : String
+                if(homeViewModel.isUserLogedIn.value == true)
+                        startDestination = Screen.home.route
+                else
+                        startDestination = Screen.login.route
+
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.login.route
+                    startDestination = startDestination
                 ){
                     composable(Screen.login.route){
                         LoginScreen(navController)
